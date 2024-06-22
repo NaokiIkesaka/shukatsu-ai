@@ -1,25 +1,54 @@
 {
-	"name": "poetry3-poetry-pyenv",
-	"build": {
-		"dockerfile": "Dockerfile"
-	},
+    "name": "edinet-rag",
+    "dockerComposeFile": ["docker-compose.yaml"],
+    "service": "app",
+    "runServices": ["app","db"],
+    "mounts": [
+      {
+        "type": "volume",
+        "source": "poetry-cache",
+        "target": "/home/vscode/.cache/pypoetry"
+      },
+      {
+        "type": "volume",
+        "source": "pyyright-cache",
+        "target": "/home/vscode/.cache/pyright-python"
+      },
+      {
+        "type": "volume",
+        "source": "venv-cache",
+        "target": "${containerWorkspaceFolder}/.venv"
+      }
+    ],
+    "workspaceFolder": "/workspace",
+    "features": {
+      "ghcr.io/devcontainers-contrib/features/poetry": {
+        "version": "latest"
+      }
+    },
+    "postAttachCommand": "sudo chown -R pn /home/vscode/.cache/pypoetry /home/vscode/.cache/pyright-python ${containerWorkspaceFolder}/.venv && poetry config virtualenvs.in-project true && poetry install",
+    "remoteUser": "pn",
+    "customizations": {
+      "vscode": {
+        "settings": {
+          "python.defaultInterpreterPath": "/workspace/.venv/bin/python",
+        "git.openRepositoryInParentFolders": "always"
+        },
+        "extensions": [
+          "ms-python.python",
+          "ms-python.vscode-pylance",
+          "streetsidesoftware.code-spell-checker",
+          "charliermarsh.ruff",
+          "tamasfe.even-better-toml",
+          "ms-azuretools.vscode-docker",
+          "github.vscode-pull-request-github",
+          "ms-vsliveshare.vsliveshare",
+          "mhutchie.git-graph",
+          "GitHub.copilot",
+          "eamodio.gitlens"
+        ]
+      }
+    },
+	"postCreateCommand": "npm install"
 
-	// 👇 Features to add to the Dev Container. More info: https://containers.dev/implementors/features.
-	// "features": {},
-
-	// 👇 Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
-
-	// 👇 Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "",
-
-	// 👇 Configure tool-specific properties.
-	"customizations": {
-        "vscode": {
-            "extensions":["ms-python.python", "njpwerner.autodocstring"]
-            }
-        }
-
-	// 👇 Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
-}
+  }
